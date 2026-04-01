@@ -14,11 +14,13 @@ async def _create_pool_cloud_sql(
     connection_name: str, user: str, password: str, database: str, ip_type: str,
 ) -> asyncpg.Pool:
     """Create pool via Cloud SQL Python Connector (production on Cloud Run)."""
+    import asyncio
     from google.cloud.sql.connector import Connector
 
-    connector = Connector()
+    loop = asyncio.get_running_loop()
+    connector = Connector(loop=loop)
 
-    async def getconn():
+    async def getconn(*args, **kwargs):
         return await connector.connect_async(
             connection_name, "asyncpg",
             user=user, password=password, db=database, ip_type=ip_type,

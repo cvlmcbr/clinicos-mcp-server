@@ -30,3 +30,10 @@ def test_powered_by_constant():
     from src.server import POWERED_BY
     assert POWERED_BY["url"] == "https://clinicos.com.au"
     assert "CVLM" in POWERED_BY["description"]
+
+
+def test_health_route_registered():
+    """Health endpoint should be registered as a custom route."""
+    from src.server import mcp
+    route_paths = [r.path for r in mcp._custom_starlette_routes]
+    assert "/health" in route_paths

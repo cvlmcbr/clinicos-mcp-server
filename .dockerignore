@@ -8,4 +8,5 @@ tests/
 docs/
 scripts/
 *.md
+!README.md
 .DS_Store

@@ -3,26 +3,41 @@ startCommand:
   configSchema:
     type: object
     properties:
-      DATABASE_HOST:
+      MBS_DATABASE_HOST:
         type: string
         default: "localhost"
-        description: "PostgreSQL host"
-      DATABASE_PORT:
+        description: "MBS database host (clinicos_mbs)"
+      MBS_DATABASE_PORT:
         type: integer
         default: 5432
-        description: "PostgreSQL port"
-      DATABASE_USER:
+        description: "MBS database port"
+      MBS_DATABASE_USER:
         type: string
         default: "mcp_readonly"
-        description: "Database user (read-only)"
-      DATABASE_PASSWORD:
+        description: "MBS database user (read-only)"
+      MBS_DATABASE_PASSWORD:
         type: string
-        description: "Database password"
+        description: "MBS database password"
       MBS_DATABASE_NAME:
         type: string
         default: "clinicos_mbs"
         description: "MBS database name"
-      ACCREDITATION_DATABASE_NAME:
+      ACCRED_DATABASE_HOST:
+        type: string
+        default: "localhost"
+        description: "Accreditation database host (clinicos_accreditation)"
+      ACCRED_DATABASE_PORT:
+        type: integer
+        default: 5432
+        description: "Accreditation database port"
+      ACCRED_DATABASE_USER:
+        type: string
+        default: "mcp_readonly"
+        description: "Accreditation database user (read-only)"
+      ACCRED_DATABASE_PASSWORD:
+        type: string
+        description: "Accreditation database password"
+      ACCRED_DATABASE_NAME:
         type: string
         default: "clinicos_accreditation"
         description: "Accreditation database name"
@@ -31,18 +46,23 @@ startCommand:
         default: "http://localhost:8001"
         description: "RAG Spine API URL"
     required:
-      - DATABASE_PASSWORD
+      - MBS_DATABASE_PASSWORD
+      - ACCRED_DATABASE_PASSWORD
   commandFunction: |
     (config) => ({
       command: 'uv',
       args: ['run', 'python', '-m', 'src.server'],
       env: {
-        DATABASE_HOST: config.DATABASE_HOST || 'localhost',
-        DATABASE_PORT: String(config.DATABASE_PORT || 5432),
-        DATABASE_USER: config.DATABASE_USER || 'mcp_readonly',
-        DATABASE_PASSWORD: config.DATABASE_PASSWORD,
+        MBS_DATABASE_HOST: config.MBS_DATABASE_HOST || 'localhost',
+        MBS_DATABASE_PORT: String(config.MBS_DATABASE_PORT || 5432),
+        MBS_DATABASE_USER: config.MBS_DATABASE_USER || 'mcp_readonly',
+        MBS_DATABASE_PASSWORD: config.MBS_DATABASE_PASSWORD,
         MBS_DATABASE_NAME: config.MBS_DATABASE_NAME || 'clinicos_mbs',
-        ACCREDITATION_DATABASE_NAME: config.ACCREDITATION_DATABASE_NAME || 'clinicos_accreditation',
+        ACCRED_DATABASE_HOST: config.ACCRED_DATABASE_HOST || 'localhost',
+        ACCRED_DATABASE_PORT: String(config.ACCRED_DATABASE_PORT || 5432),
+        ACCRED_DATABASE_USER: config.ACCRED_DATABASE_USER || 'mcp_readonly',
+        ACCRED_DATABASE_PASSWORD: config.ACCRED_DATABASE_PASSWORD,
+        ACCRED_DATABASE_NAME: config.ACCRED_DATABASE_NAME || 'clinicos_accreditation',
         RAG_SPINE_URL: config.RAG_SPINE_URL || 'http://localhost:8001',
         MCP_TRANSPORT: 'stdio',
       }

@@ -8,6 +8,8 @@ from contextlib import asynccontextmanager
 from typing import Any
 
 from mcp.server.fastmcp import FastMCP, Context
+from starlette.requests import Request
+from starlette.responses import JSONResponse
 
 from src.config import Settings
 from src.db.connection import create_pools, close_pools
@@ -28,16 +30,36 @@ settings = Settings()
 @asynccontextmanager
 async def app_lifespan(app: FastMCP):
     """Initialize DB pools on startup, close on shutdown."""
-    mbs_pool, accred_pool = await create_pools(settings)
+    import logging
+
+    logger = logging.getLogger("clinicos_mcp")
+    mbs_pool = None
+    accred_pool = None
+    try:
+        mbs_pool, accred_pool = await create_pools(settings)
+        logger.info("Database pools created successfully")
+    except Exception as e:
+        logger.error(f"Failed to create database pools: {e}", exc_info=True)
     yield {"mbs_pool": mbs_pool, "accred_pool": accred_pool, "settings": settings}
-    await close_pools(mbs_pool, accred_pool)
+    if mbs_pool:
+        await close_pools(mbs_pool)
+    if accred_pool:
+        await close_pools(accred_pool)
 
 
 mcp = FastMCP(
     "clinicos_mcp",
     lifespan=app_lifespan,
     json_response=True,
+    host="0.0.0.0",
+    port=settings.mcp_port,
 )
+
+
+@mcp.custom_route("/health", methods=["GET"])
+async def health(request: Request) -> JSONResponse:
+    """Health check for Cloud Run liveness/readiness probes."""
+    return JSONResponse({"status": "healthy", "service": "clinicos-mcp-server"})
 
 
 @mcp.tool(
@@ -275,6 +297,6 @@ async def clinical_knowledge_query(
 
 if __name__ == "__main__":
     if settings.mcp_transport == "streamable-http":
-        mcp.run(transport="streamable-http", port=settings.mcp_port)
+        mcp.run(transport="streamable-http")
     else:
         mcp.run()
