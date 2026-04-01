@@ -7,13 +7,18 @@ from src.config import Settings
 @pytest.fixture
 def dev_settings():
     return Settings(
-        database_host="localhost",
-        database_port=5432,
-        database_user="mcp_readonly",
-        database_password="testpass",
+        mbs_database_host="localhost",
+        mbs_database_port=5432,
+        mbs_database_user="mcp_readonly",
+        mbs_database_password="testpass",
         mbs_database_name="clinicos_mbs",
-        accreditation_database_name="clinicos_accreditation",
-        use_cloud_sql_connector=False,
+        mbs_use_cloud_sql_connector=False,
+        accred_database_host="localhost",
+        accred_database_port=5432,
+        accred_database_user="mcp_readonly",
+        accred_database_password="testpass",
+        accred_database_name="clinicos_accreditation",
+        accred_use_cloud_sql_connector=False,
     )
 
 
