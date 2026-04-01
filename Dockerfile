@@ -4,12 +4,10 @@ WORKDIR /app
 
 COPY --from=ghcr.io/astral-sh/uv:latest /uv /usr/local/bin/uv
 
-# Copy dependency files first for layer caching
+# Copy everything then install
 COPY pyproject.toml uv.lock ./
-RUN uv sync --no-dev --no-editable
-
-# Copy source
 COPY src/ src/
+RUN uv sync --no-dev
 
 ENV MCP_TRANSPORT=streamable-http
 ENV MCP_PORT=8080
