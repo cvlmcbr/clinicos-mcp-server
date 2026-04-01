@@ -1,0 +1,38 @@
+{
+  "project": "clinicos-mcp-server",
+  "created": "2026-04-01",
+  "last_updated": "2026-04-01",
+  "description": "Feature tracking for clinicos-mcp-server development",
+  "features": [
+    {
+      "id": "feature-001",
+      "description": "Example feature - replace with actual features",
+      "priority": "high",
+      "status": "pending",
+      "test_steps": [
+        "Step 1: Describe how to test",
+        "Step 2: Expected outcome"
+      ],
+      "passes": false,
+      "notes": "",
+      "last_updated": ""
+    }
+  ],
+  "statistics": {
+    "total_features": 1,
+    "passing": 0,
+    "failing": 0,
+    "in_progress": 0,
+    "pending": 1,
+    "blocked": 0,
+    "completion_percentage": 0
+  },
+  "status_definitions": {
+    "pending": "Not yet started",
+    "in-progress": "Currently being worked on",
+    "passing": "Implemented and tests pass",
+    "failing": "Implemented but tests fail",
+    "blocked": "Cannot proceed due to external dependency"
+  },
+  "priority_order": ["critical", "high", "medium", "low"]
+}
