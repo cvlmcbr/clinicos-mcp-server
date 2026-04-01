@@ -104,6 +104,52 @@
 
 ---
 
+### Session 2 — 2026-04-02 06:00 — Production Deployment
+
+**Feature worked on:** Cloud Run deployment + infrastructure fixes
+**Status:** DEPLOYED — MCP server live, DB connected, tools responding
+
+**What was done:**
+- Added `/health` endpoint via `mcp.custom_route()` for Cloud Run probes
+- Fixed Dockerfile: README.md missing in build context, `.dockerignore` excluded it
+- Fixed FastMCP port binding: `host="0.0.0.0"` and `port=` passed to constructor
+- Fixed Cloud SQL Python Connector: event loop mismatch (`ConnectorLoopError`), asyncpg passes positional args to `getconn()`
+- Added graceful startup: server starts even if DB pool creation fails
+- Split SQL scripts for two-instance architecture (MBS vs accreditation on different Cloud SQL instances)
+- Discovered BOTH instances are private-IP only (deployment plan was wrong about public IP)
+- Enabled public IP on cloudos-consolidated for cross-project Cloud SQL Connector access
+- Created `mcp_readonly` role on both instances via GCE VM SSH (local proxy can't reach private IPs)
+- Stored passwords in Secret Manager, granted SA permissions
+- Built Docker image locally (linux/amd64), pushed to Artifact Registry
+- Deployed to Cloud Run with dual-instance config
+- Created Global HTTP(S) Load Balancer for `mcp.clinicos.com.au` (domain mappings unsupported in au-southeast1)
+- Updated smithery.yaml for dual-database config
+- ADC auth expired mid-session; Docker Desktop was intercepting OAuth callbacks on port 8085
+
+**Infrastructure corrections:**
+- cloudos-consolidated: private IP only (172.26.0.5), NOT public. Enabled public IP (34.116.105.141)
+- clinicos-emr-pg16-staging: private IP (10.170.0.3) on `clinicos-emr-staging` network, NOT `default` network
+- Cloud SQL Connector does direct TCP to the IP, NOT API tunneling — VPC access matters
+
+**Bugs encountered:**
+- `uv sync` in Docker fails without README.md (hatchling validates readme field)
+- FastMCP ignores `FASTMCP_PORT` env var if set after FastMCP() construction
+- `asyncpg.create_pool(connect=fn)` passes positional args AND `loop=` kwarg to connect function
+- Cloud SQL Connector `ConnectorLoopError` when Connector() created on different event loop
+
+**Next session should:**
+- Add A record for mcp.clinicos.com.au → 34.149.193.178 on VentraIP
+- Wait for SSL cert to provision (automatic once DNS resolves)
+- Seed MBS items and PSR cases into production
+- Publish to Smithery (GitHub-based, smithery.yaml committed)
+- Test end-to-end with real data via Claude Desktop
+- Consider auth strategy (org policy blocks allUsers on Cloud Run)
+
+**Git commit:** `d1b92eb`
+**Tests:** 20/20 passing
+
+---
+
 ### Session 0 - Project Initialization
 
 **Feature worked on:** Harness setup
