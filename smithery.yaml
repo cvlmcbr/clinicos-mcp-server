@@ -1,0 +1,49 @@
+startCommand:
+  type: stdio
+  configSchema:
+    type: object
+    properties:
+      DATABASE_HOST:
+        type: string
+        default: "localhost"
+        description: "PostgreSQL host"
+      DATABASE_PORT:
+        type: integer
+        default: 5432
+        description: "PostgreSQL port"
+      DATABASE_USER:
+        type: string
+        default: "mcp_readonly"
+        description: "Database user (read-only)"
+      DATABASE_PASSWORD:
+        type: string
+        description: "Database password"
+      MBS_DATABASE_NAME:
+        type: string
+        default: "clinicos_mbs"
+        description: "MBS database name"
+      ACCREDITATION_DATABASE_NAME:
+        type: string
+        default: "clinicos_accreditation"
+        description: "Accreditation database name"
+      RAG_SPINE_URL:
+        type: string
+        default: "http://localhost:8001"
+        description: "RAG Spine API URL"
+    required:
+      - DATABASE_PASSWORD
+  commandFunction: |
+    (config) => ({
+      command: 'uv',
+      args: ['run', 'python', '-m', 'src.server'],
+      env: {
+        DATABASE_HOST: config.DATABASE_HOST || 'localhost',
+        DATABASE_PORT: String(config.DATABASE_PORT || 5432),
+        DATABASE_USER: config.DATABASE_USER || 'mcp_readonly',
+        DATABASE_PASSWORD: config.DATABASE_PASSWORD,
+        MBS_DATABASE_NAME: config.MBS_DATABASE_NAME || 'clinicos_mbs',
+        ACCREDITATION_DATABASE_NAME: config.ACCREDITATION_DATABASE_NAME || 'clinicos_accreditation',
+        RAG_SPINE_URL: config.RAG_SPINE_URL || 'http://localhost:8001',
+        MCP_TRANSPORT: 'stdio',
+      }
+    })

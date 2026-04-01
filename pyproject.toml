@@ -5,7 +5,17 @@ description = "Australian Medicare & Clinical Intelligence MCP Server"
 readme = "README.md"
 requires-python = ">=3.12"
 license = "MIT"
-authors = [{ name = "Dr. Alex - CVLM / ClinicOS" }]
+authors = [{ name = "Dr. Alex - CVLM / ClinicOS", email = "alex@canberraveins.com.au" }]
+keywords = ["mcp", "healthcare", "medicare", "australia", "mbs", "racgp", "clinical"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Healthcare Industry",
+    "Topic :: Scientific/Engineering :: Medical Science Apps.",
+]
+
+[project.urls]
+Homepage = "https://clinicos.com.au"
+Repository = "https://github.com/cvlmcbr/clinicos-mcp-server"
 
 dependencies = [
     "mcp[cli]>=1.0.0",
