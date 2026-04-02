@@ -3,23 +3,23 @@ from typing import Any
 import asyncpg
 
 CONSULTATION_TYPE_CATEGORIES = {
-    "follow_up": "GP Consultations",
-    "new_patient": "GP Consultations",
+    "follow_up": "General Practice",
+    "new_patient": "General Practice",
     "telehealth": "Telehealth",
     "mental_health": "Mental Health",
     "chronic_disease": "Chronic Disease Management",
-    "skin_procedure": "Skin Procedures",
-    "vascular": "Vascular Procedures",
+    "skin_procedure": "Surgical Procedures",
+    "vascular": "Surgical Procedures",
 }
 
 CO_CLAIMING_RULES: dict[tuple[str, str], list[dict[str, str]]] = {
-    ("GP Consultations", "GPMP"): [
+    ("General Practice", "GPMP"): [
         {"item": "721", "rule": "GPMP preparation", "conditions": "Once per 12 months per patient"},
     ],
-    ("GP Consultations", "TCA"): [
+    ("General Practice", "TCA"): [
         {"item": "723", "rule": "Team care arrangement", "conditions": "Once per 12 months per patient"},
     ],
-    ("GP Consultations", "MHC"): [
+    ("General Practice", "MHC"): [
         {"item": "2700", "rule": "Mental health treatment plan", "conditions": "Once per calendar year"},
         {"item": "2701", "rule": "MH plan review", "conditions": "Up to 5 reviews per plan"},
     ],

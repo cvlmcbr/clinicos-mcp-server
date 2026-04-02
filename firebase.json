@@ -1,0 +1,16 @@
+{
+  "hosting": {
+    "site": "clinicos-mcp-server",
+    "public": "public",
+    "ignore": ["firebase.json", "**/.*", "**/node_modules/**"],
+    "rewrites": [
+      {
+        "source": "**",
+        "run": {
+          "serviceId": "clinicos-mcp-server",
+          "region": "australia-southeast1"
+        }
+      }
+    ]
+  }
+}

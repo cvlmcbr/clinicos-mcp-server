@@ -1,0 +1,15 @@
+{
+  "projects": {
+    "default": "clinicos-emr-staging"
+  },
+  "targets": {
+    "clinicos-emr-staging": {
+      "hosting": {
+        "clinicos-mcp-server": [
+          "clinicos-mcp-server"
+        ]
+      }
+    }
+  },
+  "etags": {}
+}
