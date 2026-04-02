@@ -104,6 +104,51 @@
 
 ---
 
+### Session 3 — 2026-04-03 06:30 — Data Seeding + Verification
+
+**Feature worked on:** Production data seeding, tool verification, Firebase custom domain
+**Status:** ALL 4 DB TOOLS VERIFIED WORKING
+
+**What was done:**
+- Fixed mbs_item_suggest: category mapping mismatch ("GP Consultations" → "General Practice", "Skin Procedures" → "Surgical Procedures")
+- Seeded RACGP 5th Edition data: 3 modules, 14 standards, 28 criteria, 71 indicators
+- Fixed RACGP seed: evidence_requirements column is text[] not jsonb — changed cast syntax
+- Removed org policy constraint (iam.allowedPolicyMemberDomains) on clinicos-emr-staging to allow allUsers
+- Granted allUsers Cloud Run invoker on clinicos-mcp-server
+- Firebase Hosting deployed with Cloud Run rewrite + custom domain mcp.clinicos.com.au
+- Full end-to-end verification of all 5 tools against production
+
+**Verification results:**
+| Tool | Status |
+|------|--------|
+| mbs_item_lookup | PASS — Item 23 → $41.40, real MBS data |
+| mbs_item_suggest | PASS — Returns items with fees for consultation types |
+| psr_risk_check | PASS — Real PSR cases, $340K repayment |
+| racgp_indicator_lookup | PASS — GP1.1A returns Aboriginal cultural safety indicator |
+| clinical_knowledge_query | GRACEFUL FALLBACK — RAG Spine not deployed |
+
+**Production data:**
+- MBS: 45 items (Nov 2025 schedule) on cloudos-consolidated
+- PSR: 14 verified cases from psr.gov.au on cloudos-consolidated
+- RACGP: 71 indicators across 3 modules on clinicos-emr-pg16-staging
+
+**Infrastructure corrections:**
+- evidence_requirements on racgp_indicators is text[] not jsonb
+- Docker port 8085 conflict with gcloud auth persists — must quit Docker before auth
+
+**Next session should:**
+- Publish to Smithery (smithery.yaml committed, GitHub repo ready)
+- Clean up unused GLB resources (NEG, backend, URL map, forwarding rule, SSL cert)
+- Seed remaining 7 PSR cases (use seed-production-data.sql with postgres access)
+- Deploy RAG Spine for Tool 5
+- Set up Claude Desktop config and test interactively
+- Consider landing page for mcp.clinicos.com.au root
+
+**Git commit:** `17ae0f9`
+**Tests:** 20/20 passing
+
+---
+
 ### Session 2 — 2026-04-02 06:00 — Production Deployment
 
 **Feature worked on:** Cloud Run deployment + infrastructure fixes
